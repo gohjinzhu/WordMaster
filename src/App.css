@@ -1,8 +1,13 @@
+
 html {
   background: hsl(231, 16%, 92%);
 }
 
-#root {
+:root {
+  --textBubbleRadius: 5rem;
+  --stringLength: 5;
+  /* --attempts: 6; */
+  /* --containerRadius: var(--textBubbleRadius*) */
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
@@ -30,14 +35,14 @@ html {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--stringLength), minmax(0, 1fr));
   grid-auto-flow: row;
   gap: 1rem;
 }
 
 .grid-item {
-  width: 5rem;
-  height: 5rem;
+  width: var(--textBubbleRadius);
+  height: var(--textBubbleRadius);
   font-weight: 500;
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -48,4 +53,14 @@ html {
   border: 0 solid;
   background: #e7e8ee;
   box-shadow: 0.2em 0.2em 0.4em #a3a7bd, -0.2em -0.2em 0.4em #fff;
+}
+
+.green {
+  background-color: green;
+}
+.orange {
+  background-color: orange;
+}
+.grey {
+  background-color: grey;
 }
