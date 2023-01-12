@@ -1,0 +1,51 @@
+html {
+  background: hsl(231, 16%, 92%);
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.heading {
+  font-family: "Righteous", cursive;
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  color: hsl(231, 16%, 25%);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75em 0;
+  align-items: center;
+  height: 679px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-flow: row;
+  gap: 1rem;
+}
+
+.grid-item {
+  width: 5rem;
+  height: 5rem;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 0 solid;
+  background: #e7e8ee;
+  box-shadow: 0.2em 0.2em 0.4em #a3a7bd, -0.2em -0.2em 0.4em #fff;
+}
