@@ -10,13 +10,22 @@ const Bubble = ({ children, classNames }) => {
   )
 }
 
+// const KeyBoardButton 
+
+//   return (
+//     <button></button>
+
+//   )
+
+// }
+
 function App() {
   const [input, setInput] = useState([])
   const [attempts, setAttempts] = useState(0)
   const [inputAttempts, setInputAttempts] = useState([])
 
   //changing the random string will change the number of text bubbles
-  const randomString = "appleeee"
+  const randomString = "dog"
   const stringLength = randomString.length
   const root = document.documentElement.style;
   root.setProperty('--stringLength', stringLength);
@@ -54,20 +63,31 @@ function App() {
       else return 'orange'
     } else return 'grey'
   }
-
   const userAttempt = (e) => {
     const array = []
     if (input.length === stringLength) {
       console.log("checking")
       for (let i = 0; i < stringLength; i++) {
         const attemptClass = check(i)
-        array.push(<Bubble classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
+        array.push(<Bubble key={`attempt`} classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
       }
       setInputAttempts(prev => [...prev, array])
       setAttempts(prev => prev + 1)
       setInput([])
     }
   }
+
+  const buttonRef = useRef()
+  const detectEnter = (e) => {
+    if (e.keyCode === 13) buttonRef.current.click()
+  }
+  useEffect(() => {
+    document.addEventListener("keydown", detectEnter)
+
+    return () => {
+      document.removeEventListener("keydown", detectEnter)
+    }
+  }, [])
 
   return (
     <div className="App">
@@ -84,8 +104,15 @@ function App() {
 
           {Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill(<Bubble classNames={`grid-item`}></Bubble>)}
         </div>
-        <button onClick={userAttempt}>Submit</button>
+        <button ref={buttonRef} onClick={userAttempt} className='display-none'>Submit</button>
       </div>
+      {/* <div>
+        <div className='flex-container'>
+
+        </div>
+        <div className='flex-container'></div>
+        <div className='flex-container'></div>
+      </div> */}
     </div>
   )
 }

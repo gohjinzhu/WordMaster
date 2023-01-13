@@ -64,3 +64,12 @@ html {
 .grey {
   background-color: grey;
 }
+
+.display-none {
+  display: none;
+}
+
+.flex-container {
+  display: flex;
+  
+}
