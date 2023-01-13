@@ -10,14 +10,12 @@ const Bubble = ({ children, classNames }) => {
   )
 }
 
-// const KeyBoardButton 
+const KeyBoardButton = (key) => {
+  return (
+    <button></button>
+  )
 
-//   return (
-//     <button></button>
-
-//   )
-
-// }
+}
 
 function App() {
   const [input, setInput] = useState([])
@@ -33,13 +31,14 @@ function App() {
   //changing number of attempt will change the number of rows
   const numberOfAttempts = 6
 
+  //array to render empty bubbles
+  const array = new Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill("")
+
   //detectKeyDown event listener will be updated everytime input state change, to get the input.length
   const detectKeyDown = useCallback((e) => {
     if (e.keyCode >= 65 && e.keyCode <= 90) {
-      if (input.length < stringLength) {
+      if (input.length < stringLength) setInput(prev => [...prev, e.key])
 
-        setInput(prev => [...prev, e.key])
-      }
     } else if (e.keyCode === 8 && input.length > 0) {
       console.log("backspace is pressed")
       setInput(prev => prev.slice(0, -1))
@@ -53,13 +52,13 @@ function App() {
 
     return () => {
       document.removeEventListener('keydown', detectKeyDown)
-      console.log("event listener unmounted")
     }
   }, [detectKeyDown])
 
   const check = (i) => {
-    if (randomString.includes(input[i])) {
-      if (randomString[i] === input[i]) return 'green'
+    const string = randomString.toLowerCase()
+    if (string.includes(input[i].toLowerCase())) {
+      if (string[i] === input[i].toLowerCase()) return 'green'
       else return 'orange'
     } else return 'grey'
   }
@@ -69,7 +68,7 @@ function App() {
       console.log("checking")
       for (let i = 0; i < stringLength; i++) {
         const attemptClass = check(i)
-        array.push(<Bubble key={`attempt`} classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
+        array.push(<Bubble key={`${attempts}attempt${i}`} classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
       }
       setInputAttempts(prev => [...prev, array])
       setAttempts(prev => prev + 1)
@@ -99,20 +98,21 @@ function App() {
           ) : null}
 
           {input.length > 0 ? (
-            input.map(char => <Bubble classNames={`grid-item`}>{char}</Bubble>)
+            input.map((char,index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)
           ) : null}
 
-          {Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill(<Bubble classNames={`grid-item`}></Bubble>)}
+          {/* {Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill(<Bubble classNames={`grid-item`}></Bubble>)} */}
+          {array.length > 0 ? array.map((ele, index) => <Bubble key={index} classNames={`grid-item`}></Bubble>) : null}
         </div>
         <button ref={buttonRef} onClick={userAttempt} className='display-none'>Submit</button>
       </div>
-      {/* <div>
+      <div>
         <div className='flex-container'>
 
         </div>
         <div className='flex-container'></div>
         <div className='flex-container'></div>
-      </div> */}
+      </div>
     </div>
   )
 }
