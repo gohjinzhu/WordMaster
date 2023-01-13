@@ -35,25 +35,48 @@ function App() {
   const array = new Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill("")
 
   //detectKeyDown event listener will be updated everytime input state change, to get the input.length
-  const detectKeyDown = useCallback((e) => {
-    if (e.keyCode >= 65 && e.keyCode <= 90) {
-      if (input.length < stringLength) setInput(prev => [...prev, e.key])
+  // const detectKeyDown = useCallback((e) => {
+  //   if (e.keyCode >= 65 && e.keyCode <= 90) {
+  //     if (input.length < stringLength) setInput(prev => [...prev, e.key])
 
-    } else if (e.keyCode === 8 && input.length > 0) {
+  //   } else if (e.keyCode === 8 && input.length > 0) {
+  //     console.log("backspace is pressed")
+  //     setInput(prev => prev.slice(0, -1))
+  //   }
+
+  // }, [input])
+
+  //when the event listener changed, old event listener will be removed, and new event listener will be attached
+  // useEffect(() => {
+  //   document.addEventListener('keydown', detectKeyDown)
+
+  //   return () => {
+  //     document.removeEventListener('keydown', detectKeyDown)
+  //   }
+  // }, [detectKeyDown])
+
+  const detectKeyDown = (e) => {
+    if (e.keyCode >= 65 && e.keyCode <= 90) {
+      setInput(prev => [...prev, e.key])
+    } else if (e.keyCode === 8) {
       console.log("backspace is pressed")
       setInput(prev => prev.slice(0, -1))
     }
+  }
 
-  }, [input])
-
-  //when the event listener changed, old event listener will be removed, and new event listener will be attached
   useEffect(() => {
     document.addEventListener('keydown', detectKeyDown)
 
     return () => {
       document.removeEventListener('keydown', detectKeyDown)
     }
-  }, [detectKeyDown])
+  }, [])
+
+  useEffect(() => {
+    if (input.length > stringLength) {
+      setInput(prev => prev.slice(0, -1))
+    }
+  }, [input])
 
   const check = (i) => {
     const string = randomString.toLowerCase()
@@ -93,14 +116,17 @@ function App() {
       <div className='heading'>WORD MASTER</div>
       <div className='body'>
         <div className='wrapper'>
+          {/* display past attempts */}
           {inputAttempts.length > 0 ? (
             inputAttempts.map(ele => ele)
           ) : null}
 
-          {input.length > 0 ? (
-            input.map((char,index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)
-          ) : null}
+          {/* display current input */}
+          {input.length > 0 && input.length <= stringLength ? (
+            input.map((char, index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)
+          ) : input.slice(0,stringLength).map((char, index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)}
 
+          {/* display empty bubbles */}
           {/* {Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill(<Bubble classNames={`grid-item`}></Bubble>)} */}
           {array.length > 0 ? array.map((ele, index) => <Bubble key={index} classNames={`grid-item`}></Bubble>) : null}
         </div>
