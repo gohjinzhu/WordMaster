@@ -3,24 +3,14 @@ import reactLogo from './assets/react.svg'
 import './App.css'
 import "@fontsource/righteous"
 import "@fontsource/roboto"
-
-const Bubble = ({ children, classNames }) => {
-  return (
-    <span className={classNames}>{children}</span>
-  )
-}
-
-const KeyBoardButton = (key) => {
-  return (
-    <button></button>
-  )
-
-}
+import Bubble from './components/Bubble'
+import KeyBoardButton from './components/KeyBoardButton'
 
 function App() {
   const [input, setInput] = useState([])
   const [attempts, setAttempts] = useState(0)
   const [inputAttempts, setInputAttempts] = useState([])
+  const [winner, setWinner] = useState(false)
 
   //changing the random string will change the number of text bubbles
   const randomString = "dog"
@@ -34,32 +24,10 @@ function App() {
   //array to render empty bubbles
   const array = new Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill("")
 
-  //detectKeyDown event listener will be updated everytime input state change, to get the input.length
-  // const detectKeyDown = useCallback((e) => {
-  //   if (e.keyCode >= 65 && e.keyCode <= 90) {
-  //     if (input.length < stringLength) setInput(prev => [...prev, e.key])
-
-  //   } else if (e.keyCode === 8 && input.length > 0) {
-  //     console.log("backspace is pressed")
-  //     setInput(prev => prev.slice(0, -1))
-  //   }
-
-  // }, [input])
-
-  //when the event listener changed, old event listener will be removed, and new event listener will be attached
-  // useEffect(() => {
-  //   document.addEventListener('keydown', detectKeyDown)
-
-  //   return () => {
-  //     document.removeEventListener('keydown', detectKeyDown)
-  //   }
-  // }, [detectKeyDown])
-
   const detectKeyDown = (e) => {
     if (e.keyCode >= 65 && e.keyCode <= 90) {
-      setInput(prev => [...prev, e.key])
+      setInput(prev => [...prev, e.key.toUpperCase()])
     } else if (e.keyCode === 8) {
-      console.log("backspace is pressed")
       setInput(prev => prev.slice(0, -1))
     }
   }
@@ -88,16 +56,28 @@ function App() {
   const userAttempt = (e) => {
     const array = []
     if (input.length === stringLength) {
-      console.log("checking")
+      let correctWords = 0
       for (let i = 0; i < stringLength; i++) {
         const attemptClass = check(i)
+        if(attemptClass==='green') correctWords++
         array.push(<Bubble key={`${attempts}attempt${i}`} classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
+      }
+      if (correctWords === stringLength) {
+        setWinner(true)
       }
       setInputAttempts(prev => [...prev, array])
       setAttempts(prev => prev + 1)
       setInput([])
     }
   }
+
+  useEffect(() => {
+    if (winner) {
+      alert('You win')
+    } else if (attempts === numberOfAttempts && !winner) {
+      alert('You lose')
+    }
+  },[attempts,winner])
 
   const buttonRef = useRef()
   const detectEnter = (e) => {
@@ -110,6 +90,20 @@ function App() {
       document.removeEventListener("keydown", detectEnter)
     }
   }, [])
+
+  const keyBoardButtonArray = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"], ["A", "S", "D", "F", "G", "H", "J", "K", "L"], ["Z", "X", "C", "V", "B", "N", "M"]]
+
+  const characterInputHandler = (e) => {
+    const character = e.target.innerHTML
+    setInput(prev => [...prev, character])
+  }
+  const enterHandler = (e) => {
+    buttonRef.current.click()
+  }
+  const backspaceHandler = (e) => {
+    console.log("backspace is pressed")
+    setInput(prev => prev.slice(0, -1))
+  }
 
   return (
     <div className="App">
@@ -124,23 +118,35 @@ function App() {
           {/* display current input */}
           {input.length > 0 && input.length <= stringLength ? (
             input.map((char, index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)
-          ) : input.slice(0,stringLength).map((char, index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)}
+          ) : input.slice(0, stringLength).map((char, index) => <Bubble key={index} classNames={`grid-item`}>{char}</Bubble>)}
 
           {/* display empty bubbles */}
-          {/* {Array(stringLength * (numberOfAttempts - attempts) - (input.length < stringLength ? input.length : stringLength)).fill(<Bubble classNames={`grid-item`}></Bubble>)} */}
           {array.length > 0 ? array.map((ele, index) => <Bubble key={index} classNames={`grid-item`}></Bubble>) : null}
         </div>
         <button ref={buttonRef} onClick={userAttempt} className='display-none'>Submit</button>
       </div>
       <div>
-        <div className='flex-container'>
-
+        <div className='keyBoard'>
+          <div className='flex-container'>
+            {keyBoardButtonArray[0].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
+          </div>
+          <div className='flex-container'>
+            {keyBoardButtonArray[1].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
+          </div>
+          <div className='flex-container'>
+            <button className='keyBoardButton' id='enter' onClick={enterHandler}>ENTER</button>
+            {keyBoardButtonArray[2].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
+            <button className='keyBoardButton' onClick={backspaceHandler} >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
+            </button>
+          </div>
+          <div className='flex-container'></div>
         </div>
-        <div className='flex-container'></div>
-        <div className='flex-container'></div>
       </div>
     </div>
   )
 }
 
 export default App
+
+
