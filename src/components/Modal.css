@@ -1,0 +1,54 @@
+.modal_overlay {
+  position: absolute;
+  inset: 0px;
+  background-color: rgb(231, 232, 238);
+  z-index: 99;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal {
+  position: relative;
+  inset: 50% auto auto 50%;
+  border: none;
+  background: rgb(231, 232, 238);
+  overflow: auto;
+  border-radius: 1rem;
+  outline: none;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  height: calc(100% - 2rem);
+  width: calc(100% - 2rem);
+  box-shadow: rgb(163, 167, 189) 0.2em 0.2em calc(0.4em),
+    rgb(255, 255, 255) calc(-0.2em) calc(-0.2em) calc(0.4em);
+  max-width: 475px;
+  max-height: 650px;
+}
+
+.close-button {
+  padding: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  background: #e7e8ee;
+  box-shadow: 0.2em 0.2em 0.4em #a3a7bd, -0.2em -0.2em 0.4em #fff;
+  border-radius: 9999px;
+  right: 1rem;
+  top: 1rem;
+  position: absolute;
+  cursor: pointer;
+  border: 0px solid;
+}
+
+.play-again {
+  background: #e7e8ee;
+  box-shadow: 0.2em 0.2em 0.4em #a3a7bd, -0.2em -0.2em 0.4em #fff;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  border: 0 solid;
+}

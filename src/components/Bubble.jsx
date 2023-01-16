@@ -1,4 +1,5 @@
 import React from 'react'
+import './Bubble.css'
 
 const Bubble = ({classNames,children}) => {
     return (

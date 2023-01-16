@@ -1,16 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import "@fontsource/righteous"
 import "@fontsource/roboto"
 import Bubble from './components/Bubble'
 import KeyBoardButton from './components/KeyBoardButton'
+import Modal from './components/Modal'
 
 function App() {
   const [input, setInput] = useState([])
   const [attempts, setAttempts] = useState(0)
   const [inputAttempts, setInputAttempts] = useState([])
   const [winner, setWinner] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
 
   //changing the random string will change the number of text bubbles
   const randomString = "dog"
@@ -59,25 +61,28 @@ function App() {
       let correctWords = 0
       for (let i = 0; i < stringLength; i++) {
         const attemptClass = check(i)
-        if(attemptClass==='green') correctWords++
+        if (attemptClass === 'green') correctWords++
         array.push(<Bubble key={`${attempts}attempt${i}`} classNames={`grid-item ${attemptClass}`}>{input[i]}</Bubble>)
       }
       if (correctWords === stringLength) {
         setWinner(true)
+        setIsOpen(true)
+        setAttempts(0)
+        setInputAttempts([])
+        return
       }
       setInputAttempts(prev => [...prev, array])
       setAttempts(prev => prev + 1)
       setInput([])
+     
     }
   }
 
   useEffect(() => {
-    if (winner) {
-      alert('You win')
-    } else if (attempts === numberOfAttempts && !winner) {
-      alert('You lose')
+    if (attempts === numberOfAttempts) {
+      setIsOpen(true)
     }
-  },[attempts,winner])
+  },[attempts])
 
   const buttonRef = useRef()
   const detectEnter = (e) => {
@@ -105,11 +110,23 @@ function App() {
     setInput(prev => prev.slice(0, -1))
   }
 
+  const playAgain = () => {
+    setAttempts(0)
+    setInputAttempts([])
+    setInput([])
+    setWinner(false)
+    setIsOpen(false)
+  }
+
+
   return (
-    <div className="App">
+    <div>
+      {
+        isOpen && <Modal setIsOpen={setIsOpen} winner={winner} word={randomString} playAgain={playAgain} />
+      }
       <div className='heading'>WORD MASTER</div>
       <div className='body'>
-        <div className='wrapper'>
+        <div className='bubbleWrapper'>
           {/* display past attempts */}
           {inputAttempts.length > 0 ? (
             inputAttempts.map(ele => ele)
@@ -126,21 +143,20 @@ function App() {
         <button ref={buttonRef} onClick={userAttempt} className='display-none'>Submit</button>
       </div>
       <div>
-        <div className='keyBoard'>
-          <div className='flex-container'>
+        <div className='keyBoardRowContainer'>
+          <div className='keyBoardContainer'>
             {keyBoardButtonArray[0].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
           </div>
-          <div className='flex-container'>
+          <div className='keyBoardContainer'>
             {keyBoardButtonArray[1].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
           </div>
-          <div className='flex-container'>
+          <div className='keyBoardContainer'>
             <button className='keyBoardButton' id='enter' onClick={enterHandler}>ENTER</button>
             {keyBoardButtonArray[2].map(char => <KeyBoardButton key={char} character={char} characterInputHandler={characterInputHandler} />)}
             <button className='keyBoardButton' onClick={backspaceHandler} >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
             </button>
           </div>
-          <div className='flex-container'></div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import './KeyBoardButton.css'
 
 const KeyBoardButton = ({ character, characterInputHandler }) => {
   const clickHandler = (e) => {
@@ -7,9 +8,7 @@ const KeyBoardButton = ({ character, characterInputHandler }) => {
   }
   return (
     <button className='keyBoardButton' onClick={characterInputHandler}>
-      {/* <div className='keyBoardButtonDiv'> */}
         {character}
-      {/* </div> */}
     </button>
   )
 }
